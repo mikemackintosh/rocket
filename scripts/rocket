@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from rock import cli
+from rocket import cli
 
 try:
     cli.main()
