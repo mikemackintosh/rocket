@@ -50,7 +50,7 @@ def config(args, argv):
     """
     Output project configuration (json, yaml).
     """
-    parser = argument_parser(prog='rock config', format_usage=CONFIG_USAGE,
+    parser = argument_parser(prog='rocket config', format_usage=CONFIG_USAGE,
                              format_help=CONFIG_HELP)
     parser.add_argument('--format', choices=['json', 'yaml'], default='yaml')
 
@@ -71,7 +71,7 @@ def env(args, argv):
     """
     Output project environment.
     """
-    parser = argument_parser(prog='rock env', format_usage=ENV_USAGE,
+    parser = argument_parser(prog='rocket env', format_usage=ENV_USAGE,
                              format_help=ENV_HELP)
 
     sub_args = parser.parse_args(argv)
@@ -84,7 +84,7 @@ def runtime(args, argv):
     """
     List runtimes install on system.
     """
-    parser = argument_parser(prog='rock runtime', format_usage=RUNTIME_USAGE,
+    parser = argument_parser(prog='rocket runtime', format_usage=RUNTIME_USAGE,
                              format_help=RUNTIME_HELP)
 
     sub_args = parser.parse_args(argv)
@@ -117,13 +117,13 @@ def main(argv=None):
             pos = i
             break
 
-    parser = argument_parser(prog='rock', format_usage=USAGE, format_help=HELP)
+    parser = argument_parser(prog='rocket', format_usage=USAGE, format_help=HELP)
     parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--version', action='version', version=__version__)
-    parser.add_argument('--env', default=os.environ.get('ROCK_ENV', 'local'))
-    parser.add_argument('--path', default=os.environ.get('ROCK_PATH', ''))
-    parser.add_argument('--runtime', default=os.environ.get('ROCK_RUNTIME'))
+    parser.add_argument('--env', default=os.environ.get('ROCKET_ENV', 'local'))
+    parser.add_argument('--path', default=os.environ.get('ROCKET_PATH', ''))
+    parser.add_argument('--runtime', default=os.environ.get('ROCKET_RUNTIME'))
     parser.add_argument('command')
 
     try:
