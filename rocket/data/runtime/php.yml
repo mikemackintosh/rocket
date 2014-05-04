@@ -1,0 +1,93 @@
+env:
+  PATH: "${ROCKET_PATH}/bin:${ROCK_PATH}/vendor/bin:${PATH}"
+  ROCKET_COMPOSER_INSTALL: "install --dev"
+  ROCKET_COMPOSER_INSTALL_DEPLOYMENT: "--verbose --no-ansi --no-interaction install"
+
+init: |
+  if [[ "${ROCKET_ARGS_HELP}" == "true" ]]; then
+    echo 'Usage: rocket --runtime=RUNTIME init [--force] [directory]'
+    echo
+    echo '  --help             show help message'
+    echo '  --force            run init and overwrite existing files'
+    exit
+  fi
+
+  export ROCKET_PATH="${ROCK_ARG1:-${ROCK_PATH}}"
+
+  if [[ ! -d "${ROCKET_PATH}" ]]; then
+    if [[ -e "${ROCKET_PATH}" ]]; then
+      die "${ROCKET_PATH} exists and is not a directory"
+    fi
+
+    mkdir -p "${ROCKET_PATH}"
+  fi
+
+  cd "${ROCKET_PATH}"
+
+  if [[ -n "$( ls -A )" && "${ROCKET_ARGS_FORCE}" != "true" ]]; then
+    die "${ROCKET_PATH} is not empty (--force to run anyway)"
+  fi
+
+  cat << EOF > ./.rocket.yml
+  runtime: ${ROCKET_RUNTIME}
+  EOF
+
+  cat << EOF > ./composer.json
+  {
+      "require": {
+          "slim/slim": "*"
+      },
+      "require-dev": {
+          "phpunit/phpunit": "*"
+      }
+  }
+  EOF
+
+  mkdir -p ./tests
+
+build: |
+
+  if [[ "${ROCKET_ARGS_HELP}" == "true" ]]; then
+    echo 'Usage: rocket build [--deployment]'
+    echo
+    echo '  --help             show help message'
+    echo '  --deployment       run build in deployment mode'
+    exit
+  fi
+
+  if [[ "${ROCKET_ARGS_DEPLOYMENT}" != "true" ]]; then
+    if [[ -f ./composer.json ]]; then
+      composer ${ROCKET_COMPOSER_INSTALL}
+    else
+      warn 'no "composer.json" file found'
+    fi
+  else
+    if [[ ! -f ./composer.lock ]]; then
+      die 'no "composer.lock" file found'
+    fi
+    composer ${ROCKET_COMPOSER_INSTALL_DEPLOYMENT}
+  fi
+
+test: |
+
+  if [[ "${ROCKET_ARGS_HELP}" == "true" ]]; then
+    echo 'Usage: rocket test'
+    echo
+    echo '  --help             show help message'
+    exit
+  fi
+
+  phpunit ./tests
+
+clean: |
+
+  if [[ "${ROCKET_ARGS_HELP}" == "true" ]]; then
+    echo 'Usage: rocket clean'
+    echo
+    echo '  --help             show help message'
+    exit
+  fi
+
+  if [[ -d ./vendor ]]; then
+    rm -fr ./vendor
+  fi
