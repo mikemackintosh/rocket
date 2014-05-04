@@ -1,0 +1,5 @@
+*.gz
+*.pyc*
+*swp
+.coverage
+venv
