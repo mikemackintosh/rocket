@@ -1,4 +1,4 @@
 rocket
 ======
 
-run rocket
+`run rocket`
